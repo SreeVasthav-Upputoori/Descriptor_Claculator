@@ -388,6 +388,13 @@ with col_info:
 if uploaded_file:
     try:
         df_input = pd.read_csv(uploaded_file)
+    except UnicodeDecodeError:
+        uploaded_file.seek(0)
+        try:
+            df_input = pd.read_csv(uploaded_file, encoding='latin1')
+        except Exception as e:
+            st.error(f"❌ Failed to read CSV with fallback encoding: {e}")
+            st.stop()
     except Exception as e:
         st.error(f"❌ Failed to read CSV: {e}")
         st.stop()
